@@ -1,0 +1,96 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+.venv/
+venv/
+.env*/
+*.env
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS / OneDrive
+.DS_Store
+Thumbs.db
+Desktop.ini
+~$*
+
+# Build/Dist
+build/
+dist/
+*.egg-info/
+.eggs/
+install/
+
+# Tests & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.pyre/
+
+# Datasets & Generated Data
+/data/
+!data/data.yaml
+**/yolo_dataset/
+**/synthetic/
+**/mlruns/
+
+# Models & Weights
+/models/
+!models/.gitkeep
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.plan
+*.npz
+*.npy
+
+# Notebooks
+*.ipynb_checkpoints/
+
+# ROS2/colcon
+build/
+install/
+log/
+.colcon/
+
+# Docker
+*.tar
+**/.docker/
+
+# Media (exclude videos; allow images)
+*.mp4
+*.avi
+*.mov
+*.gif
+
+# Deps (external installers)
+/deps/
+*.deb
+
+# Config overrides
+*.local
+*.override.*
+
+# Keys/Tokens (safety)
+*.pem
+*.crt
+*.key
+
+# Windows PowerShell cache
+*.ps1xml
+
+# Cache
+.cache/ 

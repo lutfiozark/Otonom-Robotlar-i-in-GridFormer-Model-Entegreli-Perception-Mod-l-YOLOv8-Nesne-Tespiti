@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  gridformer-robot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gridformer-robot-main
+    restart: unless-stopped
+    
+    # GPU support for NVIDIA
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+    # Environment variables
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - ROS_DOMAIN_ID=42
+      - PYTHONPATH=/workspace
+    
+    # Volume mounts
+    volumes:
+      - .:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./models:/workspace/models
+      - ./logs:/workspace/logs
+      - ./data:/workspace/data
+    
+    # Network configuration
+    network_mode: host
+    
+    # Device access
+    devices:
+      - /dev/dri:/dev/dri  # GPU access
+    
+    # Interactive terminal
+    stdin_open: true
+    tty: true
+    
+    # Working directory
+    working_dir: /workspace
+    
+    # Default command - can be overridden
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /workspace/ros2_ws/install/setup.bash &&
+        echo '🚀 GridFormer Robot Container Ready!' &&
+        echo 'Available commands:' &&
+        echo '  - python env.py --render  (Test PyBullet)' &&
+        echo '  - ros2 launch launch/warehouse_demo.launch.py' &&
+        echo '  - ros2 run perception gridformer_node' &&
+        exec bash
+      "
+
+  # MLflow tracking server (optional)
+  mlflow:
+    image: python:3.9-slim
+    container_name: gridformer-mlflow
+    restart: unless-stopped
+    
+    ports:
+      - "5000:5000"
+    
+    volumes:
+      - ./mlruns:/workspace/mlruns
+      - ./mlflow_artifacts:/workspace/artifacts
+    
+    working_dir: /workspace
+    
+    command: >
+      bash -c "
+        pip install mlflow[extras] &&
+        mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri file:///workspace/mlruns --default-artifact-root file:///workspace/artifacts
+      "
+    
+    depends_on:
+      - gridformer-robot
+
+  # Jupyter notebook for development (optional)
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: gridformer-jupyter
+    restart: unless-stopped
+    
+    ports:
+      - "8888:8888"
+    
+    volumes:
+      - .:/home/jovyan/work
+    
+    environment:
+      - JUPYTER_TOKEN=gridformer
+    
+    command: >
+      bash -c "
+        pip install torch torchvision ultralytics opencv-python pybullet &&
+        start-notebook.sh --NotebookApp.token='gridformer' --NotebookApp.password=''
+      "
+
+# Named volumes for persistent data
+volumes:
+  models_data:
+  logs_data:
+  mlruns_data:
+
+# Network configuration
+networks:
+  default:
+    driver: bridge 

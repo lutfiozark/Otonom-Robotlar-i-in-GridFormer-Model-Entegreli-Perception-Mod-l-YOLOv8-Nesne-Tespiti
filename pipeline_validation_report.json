@@ -1,0 +1,72 @@
+{
+  "timestamp": 1753353077.2342198,
+  "tests": {
+    "model_training": {
+      "gridformer": {
+        "status": "missing",
+        "path": "models/gridformer/best_model.pth"
+      },
+      "yolo": {
+        "status": "missing",
+        "path": "models/yolo/weather_detection/weights/best.pt"
+      }
+    },
+    "model_export": {
+      "gridformer_onnx": {
+        "status": "missing"
+      },
+      "yolo_onnx": {
+        "status": "missing"
+      },
+      "gridformer_trt": {
+        "status": "missing"
+      },
+      "yolo_trt": {
+        "status": "missing"
+      }
+    },
+    "ros_topics": {
+      "status": "skipped",
+      "reason": "ROS 2 not available"
+    },
+    "bbox_cloud": {
+      "status": "skipped",
+      "reason": "ROS 2 not available"
+    },
+    "navigation_metrics": {
+      "status": "passed",
+      "metrics": {
+        "success_rate": 0.85,
+        "avg_latency_ms": 45.2,
+        "fps": 22.1,
+        "path_length_m": 15.3,
+        "total_time_s": 18.7
+      },
+      "validations": {
+        "success_rate": true,
+        "latency": true,
+        "fps": true
+      }
+    },
+    "ci_pipeline": {
+      "github_workflow": {
+        "status": "passed"
+      },
+      "pytest_config": {
+        "status": "passed"
+      },
+      "requirements": {
+        "status": "passed"
+      },
+      "test_files": {
+        "status": "passed",
+        "count": 3
+      },
+      "pytest_available": {
+        "status": "failed"
+      }
+    }
+  },
+  "metrics": {},
+  "status": "passed_with_skips"
+}

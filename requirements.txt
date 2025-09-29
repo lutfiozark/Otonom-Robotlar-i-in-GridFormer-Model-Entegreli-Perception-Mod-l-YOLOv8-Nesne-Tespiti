@@ -1,0 +1,51 @@
+# Core ML & Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+tensorrt>=8.6.1,<11.0.0
+onnx>=1.15.0
+onnxruntime-gpu>=1.16.0
+
+# Computer Vision & Image Processing
+opencv-python>=4.8.0
+ultralytics>=8.0.0
+Pillow>=10.0.0
+
+# Robotics & ROS 2
+rclpy>=4.0.0
+sensor-msgs>=4.2.0
+geometry-msgs>=4.2.0
+nav-msgs>=4.2.0
+tf2-ros>=0.25.0
+tf2-geometry-msgs>=0.25.0
+
+# Simulation
+pybullet>=3.2.0
+numpy>=1.24.0
+
+# ML Operations & Monitoring
+mlflow==2.7.1
+optuna==3.4.0
+wandb==0.15.12
+
+# Reinforcement Learning
+stable-baselines3==2.0.0
+gymnasium==0.29.1
+sb3-contrib==2.0.0
+
+# Utilities
+pyyaml>=6.0.0
+matplotlib>=3.7.0
+tqdm>=4.66.0
+click>=8.1.0
+
+# Development & Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.9.1
+flake8==6.1.0
+isort==5.12.0
+
+# ONNX Runtime optimizations for GTX 1650 (4GB VRAM)
+# Use --providers CUDAExecutionProvider,CPUExecutionProvider
+# For TensorRT: use fp16 precision to reduce memory usage 

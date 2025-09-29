@@ -1,0 +1,76 @@
+# Large model files
+*.pth
+*.pt
+*.onnx
+yolov8s.pt
+models/gridformer_trained.pth
+models/*.pth
+models/*.pt
+
+# Demo images and videos
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.mp4
+*.avi
+*.mov
+demo_*.jpg
+pipeline_*.jpg
+yolo_test_*.jpg
+full_pipeline_*.jpg
+
+# Logs and temporary files
+logs/
+*.log
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+
+# Git and development files
+.git/
+.gitignore
+*.md
+README.md
+CONTRIBUTING.md
+SPRINT_ROADMAP.md
+sprint_summary.md
+performance_analysis.md
+
+# Test and development files
+test_*.py
+demo_*.py
+*_test.py
+pytest.ini
+.pytest_cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker compose override
+docker-compose.override.yml
+docker-compose-simple.yml
+
+# Documentation
+docs/
+
+# Data and artifacts
+data/

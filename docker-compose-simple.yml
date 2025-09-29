@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  gridformer-robot-simple:
+    image: osrf/ros:humble-desktop-full
+    container_name: gridformer-robot-simple
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=42
+      - PYTHONPATH=/workspace
+    
+    # Volume mounts
+    volumes:
+      - .:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./models:/workspace/models
+      - ./logs:/workspace/logs
+    
+    # Network configuration
+    network_mode: host
+    
+    # Interactive terminal
+    stdin_open: true
+    tty: true
+    
+    # Working directory
+    working_dir: /workspace
+    
+    # Quick setup command
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y python3-pip python3-opencv &&
+        pip3 install onnxruntime torch torchvision ultralytics rclpy &&
+        source /opt/ros/humble/setup.bash &&
+        echo '🚀 Simple GridFormer Container Ready (CPU Only)!' &&
+        echo 'Run: ros2 launch launch/warehouse_demo.launch.py' &&
+        exec bash
+      "

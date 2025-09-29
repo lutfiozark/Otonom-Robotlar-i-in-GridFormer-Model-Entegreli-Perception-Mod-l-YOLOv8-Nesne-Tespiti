@@ -1,0 +1,129 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Install CPU versions for CI
+        pip install torch==2.2.0+cpu torchvision==0.17.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        pip install onnxruntime==1.16.3
+    
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Format check with black
+      run: black --check --diff .
+    
+    - name: Import sort check with isort
+      run: isort --check-only --diff .
+    
+    - name: Run pytest
+      run: |
+        pytest tests/ -v --cov=. --cov-report=xml --cov-report=term-missing
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    
+    - name: Upload coverage to codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  ros2-build:
+    runs-on: ubuntu-latest
+    container: ros:humble
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Python dependencies
+      run: |
+        apt-get update && apt-get install -y python3-pip
+        pip3 install -r requirements.txt
+        # Install CPU versions for CI
+        pip3 install torch==2.2.0+cpu torchvision==0.17.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        pip3 install onnxruntime==1.16.3
+    
+    - name: Install ROS 2 dependencies
+      run: |
+        apt-get update
+        rosdep update
+        rosdep install --from-paths navigation perception --ignore-src -r -y
+    
+    - name: Build ROS 2 packages
+      run: |
+        . /opt/ros/humble/setup.sh
+        colcon build --packages-select navigation perception --cmake-args -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Test ROS 2 packages
+      run: |
+        . /opt/ros/humble/setup.sh
+        . install/setup.sh
+        colcon test --packages-select navigation perception
+        colcon test-result --verbose
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, ros2-build]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Install CPU versions for CI
+        pip install torch==2.2.0+cpu torchvision==0.17.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        pip install onnxruntime==1.16.3
+    
+    - name: Run integration tests
+      run: |
+        python test_full_pipeline.py --cpu-only --test-mode
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          *.jpg
+          *.png
+          logs/ 
