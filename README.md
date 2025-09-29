@@ -3,6 +3,8 @@ Python ve YOLOv8 kullanarak gerçek zamanlı nesne tespiti modülü geliştirdim
 
 ![Projenin genel akışı](pipeline_fog_comparison.jpg)
 
+_Bu görsel, bozulmuş/sisli giriş görüntüsünün GridFormer ile iyileştirilmesi ve YOLOv8 ile nesne tespitinin üretilmesini; çıktının ROS 2 navigasyon yığınına beslenmesini gösterir._
+
 # Otonom Robotlar için Perception Modülü: YOLOv8 Nesne Tespiti
 
 Bu proje, otonom robotlarda düşük görüş koşullarında dahi güvenilir algılama yapabilmek için GridFormer tabanlı görüntü iyileştirme ve YOLOv8 tabanlı nesne tespitini bir araya getirir. Amaç; canlı kamera/RTSP akışlarını işleyip düşük gecikme ile tespitler üretmek ve ROS 2 ile navigasyon yığınına entegre olmaktır.
