@@ -70,11 +70,13 @@ log/
 *.tar
 **/.docker/
 
-# Media (exclude videos; allow images)
+# Media (exclude videos; allow curated images)
 *.mp4
 *.avi
 *.mov
 *.gif
+# Exclude raw demo frames to keep repo small
+/docs/figures/demo_frames/
 
 # Deps (external installers)
 /deps/
